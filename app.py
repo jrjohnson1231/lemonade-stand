@@ -1,5 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 import json
+import random
+import math
 
 app = Flask(__name__)
 
@@ -12,12 +14,15 @@ weatherReport = ""
 streetCrewThirsty = False
 stormBrewing = False
 specialDesc = ""
+specialResult = ""
 explanation = ""
 startingPricePerGlass = 2
 totalDays = 30
 c9Constant = .5
 adBenefit = 0
 glassesSold = 0
+signCost = .15
+assets = 2
 
 @app.route('/')
 def index():
@@ -25,9 +30,28 @@ def index():
 
 @app.route('/submitted', methods=['POST'])
 def submitted():
+        global day
+        global assets
+        global weatherFactor
+        global weather
+        global chanceOfRain
+        global weatherReport
+        global streetCrewThirsty
+        global stormBrewing
+        global specialDesc
+        global explanation
+        global startingPricePerGlass
+        global totalDays
+        global c9Constant
+        global adBenefit
+        global glassesSold
+        global signCost
+        global assets
+        global specialResult
+
 	data = request.get_data().decode(encoding='UTF-8')
 	data = json.loads(data)
-	currentPricePerGlass = data["price"]
+	pricePlayerIsCharging = data["price"]
 	signsMade = data["signs"]
 	glassesMade = data["cups"]	
 	day = day + 1
@@ -52,7 +76,7 @@ def submitted():
 	if(weather == "sunny"):
 		weatherReport = "sunny"
 	elif(weather == "cloudy"):
-		weatherReport = "Cloudy\n" + "There is a " + chanceOfRain + "% chance of light rain, and the weather is cooler today"
+		weatherReport = "Cloudy\n" + "There is a " + str(chanceOfRain) + "% chance of light rain, and the weather is cooler today"
 	elif(weather == "hot"):
 		weatherReport = "Hot and Dry\n A heat wave is predicted for today!"
 	elif(weather == "stormy"):
@@ -61,14 +85,14 @@ def submitted():
 	stormBrewing = False
 	if(weather == "cloudy"):
 		if(random.random() < .25):
-			stormBrewing = true
+			stormBrewing = True
 	elif(weather == "hot"):
-		continue
+            pass
 	else:
 		if(random.random() < .25):
 			specialDesc = "The street department is working today. There will be no traffic on your street"
 			if(random.random() < .25):
-				streetCrewThirsty = true
+				streetCrewThirsty = True
 			else:
 				weatherFactor = .1
 	if(day < 3):
@@ -103,7 +127,7 @@ def submitted():
 	income = glassesSold * pricePlayerIsCharging / 100
 	profit = income - expenses
 	assets = assets + income - expenses
-	return jsonify({'assets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'explanation': explanation, 'weatherReport': weatherReport, 'specialDesc': specialDesc, 'specialResult': specialResult})
+	return jsonify(data={'assets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'explanation': explanation, 'weatherReport': weatherReport, 'specialDesc': specialDesc, 'specialResult': specialResult})
 
 if __name__ == '__main__':
 	app.run(debug=True, host='0.0.0.0')

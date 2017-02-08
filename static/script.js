@@ -48,13 +48,12 @@ $( document ).ready(function() {
 
     console.log('data', data);
     $.post( "/submitted", JSON.stringify(data), function(res){
-      var data = JSON.parse(res.data);
+      var data = res;
       console.log('res', data);
     });
   });
 
   function drawSunny() {
-    console.log('sunny');
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = "#0349ba";
@@ -79,7 +78,6 @@ $( document ).ready(function() {
   }
 
   function drawHot() {
-    console.log('hot');
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = "#0349ba";
@@ -104,7 +102,6 @@ $( document ).ready(function() {
   }
 
   function drawCloudy() {
-    console.log('cloudy');
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = "#494e60";
