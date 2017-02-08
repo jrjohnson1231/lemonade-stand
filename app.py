@@ -3,7 +3,7 @@ from flask import Flask, render_template, jsonify, request
 app = Flask(__name__)
 
 weatherFactor = 0
-day = 1
+day = 0
 weather = ""
 chanceOfRain = 0
 weatherFactor = 1
