@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Lemonade Stand</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </head>
+  <body>
+    <div class="banner">
+      <h1>Lemonade Stand</h1>
+    </div>
+    <div class="centered">
+      <form id="form">
+        <div class="flex-row form-group">
+          <label class="flex-item" for="cups">How many cups?</label>
+          <input class="flex-item" name="cups" type="text" class="form-control" id="cups" placeholder="0">
+        </div>
+        <div class="flex-row form-group">
+          <label class="flex-item" for="signs">How many signs?</label>
+          <input class="flex-item" name="signs" type="text" class="form-control" id="signs" placeholder="0">
+        </div>
+        <div class="flex-row form-group">
+          <label class="flex-item" for="price">How much per cup?</label>
+          <input class="flex-item" name="price" type="text" class="form-control" id="price" placeholder="0">
+        </div>
+        <div class=submit-btn>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
