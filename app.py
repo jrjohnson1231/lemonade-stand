@@ -28,6 +28,17 @@ assets = 2
 def index():
 	return render_template('index.html')
 
+@app.route('/initializd', methods=['GET'])
+def initialized():
+	global day
+	global assets
+	global startingPricePerGlass
+	day = 1
+	assets = 2
+	startingPricePerGlass = 2
+	return jsonify(data={'day': day, 'assets': assets, 'startingPricePerGlass': startingPricePerGlass})
+
+
 @app.route('/submitted', methods=['POST'])
 def submitted():
         global weatherFactor
