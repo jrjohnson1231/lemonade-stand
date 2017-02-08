@@ -28,6 +28,17 @@ assets = 2
 def index():
 	return render_template('index.html')
 
+@app.route('/initializd', methods=['GET'])
+def initialized():
+	global day
+	global assets
+	global startingPricePerGlass
+	day = 1
+	assets = 2
+	startingPricePerGlass = 2
+	return jsonify(data={'day': day, 'assets': assets, 'startingPricePerGlass': startingPricePerGlass})
+
+
 @app.route('/submitted', methods=['POST'])
 def submitted():
         global day
@@ -54,7 +65,6 @@ def submitted():
 	pricePlayerIsCharging = data["price"]
 	signsMade = data["signs"]
 	glassesMade = data["cups"]	
-	day = day + 1
 	r = random.random()
 	if(r < .6):
 		weather = "sunny"
@@ -113,7 +123,7 @@ def submitted():
 	adBenefit = (1 - (math.exp(w) * totalDays))
 	number2 = math.floor(weatherFactor * number1 * (1+ adBenefit))
 	if(stormBrewing):
-		weather = stormy
+		weather = "stormy"
 		number2 = 0
 		if(glassesMade > 0):
 			specialResult = "All lemonade was ruined"
