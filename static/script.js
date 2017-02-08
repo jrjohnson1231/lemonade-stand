@@ -5,12 +5,16 @@ $( document ).ready(function() {
   // signs 0-50
   // price 0-100
   // 
-  const state = {
+  const stateEnum = {
     INTRO: 0,
     PICTURE: 1,
     FORM: 2,
     ENDING: 3
   }
+
+  var state = stateEnum.INTRO;
+  var day = 1;
+  var assets = 2;
 
   $('#form').submit(function(event) {
     event.preventDefault();
@@ -45,11 +49,14 @@ $( document ).ready(function() {
     } else {
       changeError('');
     }
-
-    console.log('data', data);
+    console.log(day)
+    data['day'] = day;
+    data['assets'] = assets;
+    console.log('sending', data)
     $.post( "/submitted", JSON.stringify(data), function(res){
-      var data = res;
-      console.log('res', data);
+      var data = res.data;
+      console.log('returned', data);
+      day += 1;
     });
   });
 

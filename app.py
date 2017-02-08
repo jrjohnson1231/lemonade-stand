@@ -6,7 +6,7 @@ import math
 app = Flask(__name__)
 
 weatherFactor = 0
-day = 1
+day = 0
 weather = ""
 chanceOfRain = 0
 weatherFactor = 1
@@ -30,8 +30,6 @@ def index():
 
 @app.route('/submitted', methods=['POST'])
 def submitted():
-        global day
-        global assets
         global weatherFactor
         global weather
         global chanceOfRain
@@ -54,7 +52,11 @@ def submitted():
 	pricePlayerIsCharging = data["price"]
 	signsMade = data["signs"]
 	glassesMade = data["cups"]	
-	day = day + 1
+	day = data['day']
+        assets = data['assets']
+
+        print data
+
 	r = random.random()
 	if(r < .6):
 		weather = "sunny"
@@ -110,10 +112,10 @@ def submitted():
 	else:
 		number1 = ((startingPricePerGlass - pricePlayerIsCharging) / (startingPricePerGlass * .8 * totalDays + totalDays))
 	w = -signsMade * c9Constant
-	adBenefit = (1 - (math.exp(w) * totalDays))
+	adBenefit = (1 - (math.exp(w)))
 	number2 = math.floor(weatherFactor * number1 * (1+ adBenefit))
 	if(stormBrewing):
-		weather = stormy
+		weather = "stormy"
 		number2 = 0
 		if(glassesMade > 0):
 			specialResult = "All lemonade was ruined"
@@ -123,8 +125,11 @@ def submitted():
 		glassesSold = number2
 	else:
 		glassesSold = glassesMade
-	expenses = glassesMade * (currentPricePerGlass/100) + signsMade * signCost
-	income = glassesSold * pricePlayerIsCharging / 100
+        print 'Sold' + str(glassesSold) + 'glasses'
+        print 'Ad Benefit' + str(adBenefit)
+        print 'Current price per glass' + str(currentPricePerGlass)
+	expenses = glassesMade * (float(currentPricePerGlass)/float(100)) + signsMade * signCost
+	income = float(glassesSold) * float(pricePlayerIsCharging) / float(100)
 	profit = income - expenses
 	assets = assets + income - expenses
 	return jsonify(data={'assets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'explanation': explanation, 'weatherReport': weatherReport, 'specialDesc': specialDesc, 'specialResult': specialResult})
