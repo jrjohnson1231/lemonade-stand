@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request
+import json
 
 app = Flask(__name__)
 
@@ -9,7 +10,8 @@ def index():
 @app.route('/submitted', methods=['POST'])
 def submitted():
 	data = request.get_data().decode(encoding='UTF-8')
-	print data
+	data = json.loads(data)
+        print data['price']
 	return jsonify(data=data)
 
 if __name__ == '__main__':
