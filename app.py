@@ -17,7 +17,7 @@ startingPricePerGlass = 2
 totalDays = 30
 c9Constant = .5
 adBenefit = 0
-
+glassesSold = 0
 
 @app.route('/')
 def index():
@@ -27,10 +27,14 @@ def index():
 def submitted():
 	data = request.get_data().decode(encoding='UTF-8')
 	data = json.loads(data)
+	currentPricePerGlass = data["price"]
+	signsMade = data["signs"]
+	glassesMade = data["cups"]	
 	day = day + 1
-	if(rnd < .6):
+	r = random.random()
+	if(r < .6):
 		weather = "sunny"
-	else if(rnd < .8):
+	elif(r < .8):
 		weather = "cloudy"
 	else:
 		if(day < 3):
@@ -41,25 +45,25 @@ def submitted():
 	if(weather == "cloudy"):
 		chanceOfRain = 30 + math.floor(random.random() * 5) * 10
 		weatherFactor = 1 - chanceOfRain / 100
-	else if(weather == "hot"):
+	elif(weather == "hot"):
 		weatherFactor = 2
 	else:
 		weatherFactor = 1
 	if(weather == "sunny"):
 		weatherReport = "sunny"
-	else if(weather == "cloudy"):
+	elif(weather == "cloudy"):
 		weatherReport = "Cloudy\n" + "There is a " + chanceOfRain + "% chance of light rain, and the weather is cooler today"
-	else if(weather == "hot"):
+	elif(weather == "hot"):
 		weatherReport = "Hot and Dry\n A heat wave is predicted for today!"
-	else if(weather == "stormy"):
+	elif(weather == "stormy"):
 		weatherReport = "Thunderstorms!\nA severe thunderstorm hit Lemonsville earlier today, just as the lemonade stands were being set up. Unfortunately, everything was ruined!"
 	streetCrewThirsty = False
 	stormBrewing = False
 	if(weather == "cloudy"):
 		if(random.random() < .25):
 			stormBrewing = true
-	else if(weather == "hot"):
-		#heat wave
+	elif(weather == "hot"):
+		continue
 	else:
 		if(random.random() < .25):
 			specialDesc = "The street department is working today. There will be no traffic on your street"
@@ -69,7 +73,7 @@ def submitted():
 				weatherFactor = .1
 	if(day < 3):
 		currentPricePerGlass = 2
-	else if(day < 7):
+	elif(day < 7):
 		currentPricePerGlass = 4
 		if(day == 3):
 			explanation = "(Your mother quit giving you free sugar.)"
@@ -80,7 +84,7 @@ def submitted():
 	if(pricePlayerIsCharging >= startingPricePerGlass):
 		number1 = ((math.pow(startingPricePerGlass, 2) * totalDays) / (math.pow(pricePlayerIsCharging, 2)))
 	else:
-		number1 = ((startingPricePerGlass - pricePlayerIsCharging) / (startingPricePerGlass * .8 * totalDays + totalDays)
+		number1 = ((startingPricePerGlass - pricePlayerIsCharging) / (startingPricePerGlass * .8 * totalDays + totalDays))
 	w = -signsMade * c9Constant
 	adBenefit = (1 - (math.exp(w) * totalDays))
 	number2 = math.floor(weatherFactor * number1 * (1+ adBenefit))
@@ -89,7 +93,7 @@ def submitted():
 		number2 = 0
 		if(glassesMade > 0):
 			specialResult = "All lemonade was ruined"
-	else if(streetCrewThirsty):
+	elif(streetCrewThirsty):
 		specialResult = "The street crews bought all your lemonade at lunchtime!"
 	if(number2 < glassesMade):
 		glassesSold = number2
@@ -97,9 +101,9 @@ def submitted():
 		glassesSold = glassesMade
 	expenses = glassesMade * (currentPricePerGlass/100) + signsMade * signCost
 	income = glassesSold * pricePlayerIsCharging / 100
+	profit = income - expenses
 	assets = assets + income - expenses
-
-	return jsonify(data=data)
+	return jsonify({'assets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'explanation': explanation, 'weatherReport': weatherReport, 'specialDesc': specialDesc, 'specialResult': specialResult})
 
 if __name__ == '__main__':
 	app.run(debug=True, host='0.0.0.0')
