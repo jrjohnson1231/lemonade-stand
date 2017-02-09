@@ -167,6 +167,6 @@ def submitted():
 	return jsonify(data={'glassesSold': glassesSold, 'assets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'specialResult': specialResult, 'specialResultIndicator': specialResultIndicator})
 
 if __name__ == '__main__':
-	app.run(debug=True, host='0.0.0.0')
+	app.run(debug=True)
 
 
