@@ -79,7 +79,12 @@ canvas {
   font-weight: bold;
 }
 
-.results {
+#results {
   font-size: 16px;
   font-weight: bold;
+  margin: 0px 30px;
+}
+
+.text-center {
+  text-align: center;
 }

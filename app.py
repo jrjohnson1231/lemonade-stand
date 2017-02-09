@@ -125,11 +125,25 @@ def submitted():
         glassesMade = data["cups"]
         day = data['day']
         assets = data['assets']
+    
 
+	if(day < 3):
+		currentPricePerGlass = .02
+	elif(day < 7):
+		currentPricePerGlass = .04
+		if(day == 3):
+			explanationIndicator = True
+			explanation = "(Your mother quit giving you free sugar.)"
+	else:
+		if(day == 7):
+			explanation = "(The price of lemonade mix just went up.)"
+			explanationIndicator = True
+		currentPricePerGlass = .05
 	if(pricePlayerIsCharging >= startingPricePerGlass):
 		number1 = ((math.pow(startingPricePerGlass, 2) * totalDays) / (math.pow(pricePlayerIsCharging, 2)))
 	else:
 		number1 = ((startingPricePerGlass - pricePlayerIsCharging) / (startingPricePerGlass * .8 * totalDays + totalDays))
+
 	w = -signsMade * c9Constant
 	adBenefit = (1 - (math.exp(w)))
 	number2 = math.floor(weatherFactor * number1 * (1+ adBenefit))

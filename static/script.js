@@ -4,6 +4,7 @@ $( document ).ready(function() {
   var assets;
   var weather;
   var costToMake;
+  var weatherReport;
 
   function constructor() {
     day = 1;
@@ -13,10 +14,22 @@ $( document ).ready(function() {
 
     $('#canvas').hide();
     $('#questions').hide();
+    $('#results').hide();
   }
 
   $('#intro').click(function() {
     $('#intro').hide();
+    $('#canvas').show();
+
+    drawCanvas();
+
+    setTimeout(function() {
+      showQuestons();
+    }, 3000);
+  })
+
+  $('#results').click(function() {
+    $('#results').hide();
     $('#canvas').show();
 
     drawCanvas();
@@ -35,7 +48,7 @@ $( document ).ready(function() {
       input[n['name']] = parseInt(n['value']);
     });
 
-    if (input.cups === undefined || !input.signs === undefined || input.price === undefined) {
+    if (isNaN(input.cups) || isNaN(input.signs) || isNaN(input.price)) {
       changeError('Invalid input!');
       return;
     } else if (input.cups < 0) {
@@ -86,6 +99,9 @@ $( document ).ready(function() {
         $('#total-exp').text('$' + expenses + ' total expenses');
         $('#profit').text('$' + profit + ' total profit');
         $('#assets').text('$' + assets + ' total assets');
+
+        $('#results').show();
+        $('#questions').hide();
 
       });
   });
@@ -226,8 +242,8 @@ $( document ).ready(function() {
     $('#error').text(msg);
   }
 
-  function weatherMessage(msg) {
-    $('#wthr-msg').text(msg);
+  function weatherMessage() {
+    $('#wthr-msg').text(weatherReport);
   }
 
   function showQuestons() {
@@ -241,6 +257,7 @@ $( document ).ready(function() {
   function getNextRound() {
     $.post('/initialize', JSON.stringify({day}), function(res) {
       console.log(res.data);
+      weather = res.data.weather;
       weather = res.data.weatherReport;
       costToMake = res.data.currentPricePerGlass;
       console.log(weather, costToMake);
