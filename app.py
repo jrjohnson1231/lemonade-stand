@@ -141,7 +141,7 @@ def submitted():
 	income = float(glassesSold) * float(pricePlayerIsCharging) / float(100)
 	profit = income - expenses
 	assets = assets + income - expenses
-	return jsonify(data={'assets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'specialResult': specialResult, 'specialResultIndicator': specialResultIndicator})
+	return jsonify(data={'glassesSold': glassesSold, glassets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'specialResult': specialResult, 'specialResultIndicator': specialResultIndicator})
 
 if __name__ == '__main__':
 	app.run(debug=True, host='0.0.0.0')
