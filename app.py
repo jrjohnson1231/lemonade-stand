@@ -104,7 +104,7 @@ def submitted():
 	glassesMade = data["cups"]
 	day = data['day']
 	assets = data['assets']
-    weather = data['weather']
+        weather = data['weather']
 	streetCrewThirsty = data['thirsty']
 
 	if(day < 3):
@@ -138,19 +138,10 @@ def submitted():
 		weatherReport = "Cloudy\n" + "There is a " + str(chanceOfRain) + "% chance of light rain, and the weather is cooler today"
 	elif(weather == "hot"):
 		weatherReport = "Hot and Dry\n A heat wave is predicted for today!"
-	streetCrewThirsty = False
 	stormBrewing = False
 	if(weather == "cloudy"):
 		if(random.random() < .25):
 			stormBrewing = True
-	else:
-		if(random.random() < .25):
-			specialDesc = "The street department is working today. There will be no traffic on your street"
-			specialDescIndicator = True
-			if(random.random() < .25):
-				streetCrewThirsty = True
-			else:
-				weatherFactor = .1
 
 	w = -signsMade * c9Constant
 	adBenefit = (1 - (math.exp(w)))
@@ -166,6 +157,7 @@ def submitted():
 		number2 = glassesMade
 	if(number2 < glassesMade):
 		glassesSold = number2
+
 	else:
 		glassesSold = glassesMade
 	expenses = glassesMade * currentPricePerGlass + signsMade * signCost

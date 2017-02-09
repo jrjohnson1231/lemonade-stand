@@ -59,7 +59,6 @@ $( document ).ready(function() {
       input[n['name']] = parseInt(n['value']);
     });
 
-    console.log('spending',input.cups*costToMake + input.signs*.15)
     if (isNaN(input.cups) || isNaN(input.signs) || isNaN(input.price)) {
       changeError('Invalid input!');
       return;
@@ -82,21 +81,17 @@ $( document ).ready(function() {
       changeError("You can't charge that much, nobody will buy it");
       return;
     } else if (input.cups*costToMake + input.signs*.15 > assets) {
-      console.log('out of money')
       changeError("You don't have enough money to make that!");
       return;
     } else {
       changeError('');
     }
-    console.log(day);
     input['day'] = day;
     input['assets'] = assets;
     input['weather'] = weather;
-    inpurt['thirsty'] = thirsty;
-    console.log('sending', input)
+    input['thirsty'] = thirsty;
       $.post( "/submitted", JSON.stringify(input), function(res){
         var data = res.data;
-        console.log('returned', data);
         assets = data.assets;
         if (assets <= 0) {
           $('#questions').hide();
@@ -269,7 +264,6 @@ $( document ).ready(function() {
   }
 
   function changeError(msg) {
-    console.log('changing error');
     $('#error').text(msg);
   }
 
@@ -296,7 +290,6 @@ $( document ).ready(function() {
   function getNextRound() {
     day += 1;
     $.post('/initialize', JSON.stringify({day}), function(res) {
-      console.log(res.data);
       weather = res.data.weather;
       weatherReport = res.data.weatherReport;
       thirsty = res.data.thirsty;
@@ -312,7 +305,6 @@ $( document ).ready(function() {
         explanation = '';
       }
       costToMake = res.data.currentPricePerGlass;
-      console.log(weather, costToMake);
     })
   }
 
