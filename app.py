@@ -5,27 +5,7 @@ import math
 
 app = Flask(__name__)
 
-weatherFactor = 0
-day = 0
-weather = ""
-chanceOfRain = 0
-weatherFactor = 1
-weatherReport = ""
-streetCrewThirsty = False
 stormBrewing = False
-specialDesc = ""
-specialDescIndicator = False
-specialResult = ""
-specialResultIndicator = False
-explanation = ""
-explanationIndicator = False
-startingPricePerGlass = 2
-totalDays = 30
-c9Constant = .5
-adBenefit = 0
-glassesSold = 0
-signCost = .15
-assets = 2
 
 @app.route('/')
 def index():
@@ -33,16 +13,16 @@ def index():
 
 @app.route('/initialize', methods=['POST'])
 def initialize():
-	global weatherFactor
-	global weather
-	global chanceOfRain
-	global weatherReport
-	global streetCrewThirsty
 	global stormBrewing
-	global specialDesc
-	global explanation
-	global specialDescIndicator		
-	global explanationIndicator
+	weatherFactor = 0
+	weather = ""
+	chanceOfRain = 0
+	weatherReport = ""
+	streetCrewThirsty = False
+	specialDesc = ""
+	specialDescIndicator = False
+	explanation = ""
+	explanationIndicator = False
 
 	data = request.get_data().decode(encoding='UTF-8')
 	data = json.loads(data)
@@ -104,23 +84,24 @@ def initialize():
 
 @app.route('/submitted', methods=['POST'])
 def submitted():
-	global startingPricePerGlass
-	global totalDays
-	global c9Constant
-	global adBenefit
-	global glassesSold
-	global signCost
-	global assets
-	global specialResult
-	global specialResultIndicator
+	global stormBrewing
+	specialResult = ""
+	specialResultIndicator = False
+	startingPricePerGlass = 2
+	totalDays = 30
+	c9Constant = .5
+	adBenefit = 0
+	glassesSold = 0
+	signCost = .15
+	assets = 2
 
-        data = request.get_data().decode(encoding='UTF-8')
-        data = json.loads(data)
-        pricePlayerIsCharging = data["price"]
-        signsMade = data["signs"]
-        glassesMade = data["cups"]
-        day = data['day']
-        assets = data['assets']
+	data = request.get_data().decode(encoding='UTF-8')
+	data = json.loads(data)
+	pricePlayerIsCharging = data["price"]
+	signsMade = data["signs"]
+	glassesMade = data["cups"]
+	day = data['day']
+	assets = data['assets']
 
 	if(pricePlayerIsCharging >= startingPricePerGlass):
 		number1 = ((math.pow(startingPricePerGlass, 2) * totalDays) / (math.pow(pricePlayerIsCharging, 2)))
