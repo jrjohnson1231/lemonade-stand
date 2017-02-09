@@ -44,45 +44,41 @@ def initialize():
 	global specialDescIndicator		
 	global explanationIndicator
 
-        data = request.get_data().decode(encoding='UTF-8')
-        data = json.loads(data)
-        day = data['day']
+	data = request.get_data().decode(encoding='UTF-8')
+	data = json.loads(data)
+	day = data['day']
 
 	specialDescIndicator = False
 	explanationIndicator = False
 	r = random.random()
 	if(r < .6):
-		weather = "sunny"
+		weather = "Sunny"
 	elif(r < .8):
-		weather = "cloudy"
+		weather = "Cloudy"
 	else:
 		if(day < 3):
-			weather = "sunny"
+			weather = "Sunny"
 		else:
-			weather = "hot"
+			weather = "Hot"
 	chanceOfRain = 0
-	if(weather == "cloudy"):
+	if(weather == "Cloudy"):
 		chanceOfRain = 30 + math.floor(random.random() * 5) * 10
 		weatherFactor = 1 - chanceOfRain / 100
-	elif(weather == "hot"):
+	elif(weather == "Hot"):
 		weatherFactor = 2
 	else:
 		weatherFactor = 1
-	if(weather == "sunny"):
-		weatherReport = "sunny"
-	elif(weather == "cloudy"):
+	if(weather == "Sunny"):
+		weatherReport = "Sunny"
+	elif(weather == "Cloudy"):
 		weatherReport = "Cloudy\n" + "There is a " + str(chanceOfRain) + "% chance of light rain, and the weather is cooler today"
-	elif(weather == "hot"):
+	elif(weather == "Hot"):
 		weatherReport = "Hot and Dry\n A heat wave is predicted for today!"
-	elif(weather == "stormy"):
-		weatherReport = "Thunderstorms!\nA severe thunderstorm hit Lemonsville earlier today, just as the lemonade stands were being set up. Unfortunately, everything was ruined!"
 	streetCrewThirsty = False
 	stormBrewing = False
-	if(weather == "cloudy"):
+	if(weather == "Cloudy"):
 		if(random.random() < .25):
 			stormBrewing = True
-	elif(weather == "hot"):
-		pass
 	else:
 		if(random.random() < .25):
 			specialDesc = "The street department is working today. There will be no traffic on your street"
@@ -103,7 +99,7 @@ def initialize():
 			explanation = "(The price of lemonade mix just went up.)"
 			explanationIndicator = True
 		currentPricePerGlass = .05
-	return jsonify(data={'currentPricePerGlass': currentPricePerGlass, 'explanation': explanation, 'explanationIndicator': explanationIndicator, 'specialDesc': specialDesc, 'specialDescIndicator': specialDescIndicator, 'weatherReport': weatherReport})
+	return jsonify(data={'weather': weather, 'currentPricePerGlass': currentPricePerGlass, 'explanation': explanation, 'explanationIndicator': explanationIndicator, 'specialDesc': specialDesc, 'specialDescIndicator': specialDescIndicator, 'weatherReport': weatherReport})
 
 
 @app.route('/submitted', methods=['POST'])
@@ -134,10 +130,9 @@ def submitted():
 	adBenefit = (1 - (math.exp(w)))
 	number2 = math.floor(weatherFactor * number1 * (1+ adBenefit))
 	if(stormBrewing):
-		weather = "stormy"
 		number2 = 0
 		if(glassesMade > 0):
-			specialResult = "All lemonade was ruined"
+			specialResult = "Thunderstorms!\nA severe thunderstorm hit Lemonsville earlier today, just as the lemonade stands were being set up. Unfortunately, all lemonade was ruined!"
 			specialResultIndicator = True
 	elif(streetCrewThirsty):
 		specialResult = "The street crews bought all your lemonade at lunchtime!"
