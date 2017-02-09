@@ -8,6 +8,7 @@ $( document ).ready(function() {
   var specialDesc;
   var explanation;
   var special;
+  var thirsty;
 
   function constructor() {
     day = 0;
@@ -91,6 +92,7 @@ $( document ).ready(function() {
     input['day'] = day;
     input['assets'] = assets;
     input['weather'] = weather;
+    inpurt['thirsty'] = thirsty;
     console.log('sending', input)
       $.post( "/submitted", JSON.stringify(input), function(res){
         var data = res.data;
@@ -297,6 +299,7 @@ $( document ).ready(function() {
       console.log(res.data);
       weather = res.data.weather;
       weatherReport = res.data.weatherReport;
+      thirsty = res.data.thirsty;
       if (res.data.specialDescIndicator) {
         specialDesc = res.data.specialDesc;
       } else {
