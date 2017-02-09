@@ -1,10 +1,5 @@
 $( document ).ready(function() {
 
-  //valid:
-  // glass 0-1000
-  // signs 0-50
-  // price 0-100
-  // 
   const stateEnum = {
     INTRO: 0,
     PICTURE: 1,
