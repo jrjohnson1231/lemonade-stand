@@ -14,7 +14,9 @@ weatherReport = ""
 streetCrewThirsty = False
 stormBrewing = False
 specialDesc = ""
+specialDescIndicator = False
 specialResult = ""
+specialResultIndicator = True
 explanation = ""
 startingPricePerGlass = 2
 totalDays = 30
@@ -28,7 +30,7 @@ assets = 2
 def index():
 	return render_template('index.html')
 
-@app.route('/initializd', methods=['GET'])
+@app.route('/initialized', methods=['GET'])
 def initialized():
 	global day
 	global assets
