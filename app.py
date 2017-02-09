@@ -52,31 +52,31 @@ def initialize():
 	explanationIndicator = False
 	r = random.random()
 	if(r < .6):
-		weather = "Sunny"
+		weather = "sunny"
 	elif(r < .8):
-		weather = "Cloudy"
+		weather = "cloudy"
 	else:
 		if(day < 3):
-			weather = "Sunny"
+			weather = "sunny"
 		else:
-			weather = "Hot"
+			weather = "hot"
 	chanceOfRain = 0
-	if(weather == "Cloudy"):
+	if(weather == "cloudy"):
 		chanceOfRain = 30 + math.floor(random.random() * 5) * 10
 		weatherFactor = 1 - chanceOfRain / 100
-	elif(weather == "Hot"):
+	elif(weather == "hot"):
 		weatherFactor = 2
 	else:
 		weatherFactor = 1
-	if(weather == "Sunny"):
+	if(weather == "sunny"):
 		weatherReport = "Sunny"
-	elif(weather == "Cloudy"):
+	elif(weather == "cloudy"):
 		weatherReport = "Cloudy\n" + "There is a " + str(chanceOfRain) + "% chance of light rain, and the weather is cooler today"
-	elif(weather == "Hot"):
+	elif(weather == "hot"):
 		weatherReport = "Hot and Dry\n A heat wave is predicted for today!"
 	streetCrewThirsty = False
 	stormBrewing = False
-	if(weather == "Cloudy"):
+	if(weather == "cloudy"):
 		if(random.random() < .25):
 			stormBrewing = True
 	else:

@@ -63,7 +63,7 @@ canvas {
   font-weight: bold;
 }
 
-#q-assets, #q-cost {
+#q-assets, #q-cost, #explain {
   margin-left: 30px;
   font-size: 22px;
   font-weight: bold;

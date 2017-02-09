@@ -5,9 +5,11 @@ $( document ).ready(function() {
   var weather;
   var costToMake;
   var weatherReport;
+  var specialDesc;
+  var explanation;
 
   function constructor() {
-    day = 1;
+    day = 0;
     assets = 2.00;
 
     getNextRound();
@@ -77,10 +79,8 @@ $( document ).ready(function() {
     input['assets'] = assets;
     console.log('sending', input)
       $.post( "/submitted", JSON.stringify(input), function(res){
-        getNextRound()
         var data = res.data;
         console.log('returned', data);
-        day += 1;
         assets = data.assets;
         var income = data.income;
         var profit = data.profit;
@@ -93,20 +93,23 @@ $( document ).ready(function() {
         $('#day').text('Day ' + day);
         $('#glasses-sold').text(glassesSold + ' glasses sold');
         $('#per-glass').text('$' + perGlass + ' per glass');
-        $('#total-in').text('$' + income + ' total income');
+        $('#total-in').text('$' + parseFloat(income).toFixed(2) + ' total income');
         $('#glasses-made').text(glassesMade + ' glasses made');
         $('#signs-made').text(signsMade + ' signs made');
-        $('#total-exp').text('$' + expenses + ' total expenses');
-        $('#profit').text('$' + profit + ' total profit');
-        $('#assets').text('$' + assets + ' total assets');
+        $('#total-exp').text('$' + parseFloat(expenses).toFixed(2) + ' total expenses');
+        $('#profit').text('$' + parseFloat(profit).toFixed(2) + ' total profit');
+        $('#assets').text('$' + parseFloat(assets).toFixed(2) + ' total assets');
 
         $('#results').show();
         $('#questions').hide();
+        getNextRound()
 
       });
   });
 
   function drawCanvas() {
+    $('#event').text(specialDesc);
+
     switch (weather) {
       case 'sunny':
         drawSunny();
@@ -247,18 +250,31 @@ $( document ).ready(function() {
   }
 
   function showQuestons() {
+    $('#explain').text(explanation);
     $('#canvas').hide();
     $('#questions').show();
 
-    $('#q-assets').text('On day ' + day + 'you have $' + assets + ' in assets.');
-    $('#q-cost').text('The cost to make lemonade is $' + costToMake + ' per cup.');
+    $('#q-assets').text('On day ' + day + ' you have $' + parseFloat(assets).toFixed(2) + ' in assets.');
+    $('#q-cost').text('The cost to make lemonade is $' + parseFloat(costToMake).toFixed(2) + ' per cup.');
   }
 
   function getNextRound() {
+    day += 1;
     $.post('/initialize', JSON.stringify({day}), function(res) {
       console.log(res.data);
       weather = res.data.weather;
-      weather = res.data.weatherReport;
+      weatherReport = res.data.weatherReport;
+      if (res.data.specialDescIndicator) {
+        specialDesc = res.data.specialDesc;
+      } else {
+        specialDesc = '';
+      }
+
+      if (res.data.explanationIndicator) {
+        explanation = res.data.explanation;
+      } else {
+        explanation = '';
+      }
       costToMake = res.data.currentPricePerGlass;
       console.log(weather, costToMake);
     })
