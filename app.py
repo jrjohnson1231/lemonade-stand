@@ -62,15 +62,15 @@ def submitted():
 	data = json.loads(data)
 	pricePlayerIsCharging = data["price"]
 	signsMade = data["signs"]
-	glassesMade = data["cups"]	
-	day = data['day']
+	glassesMade = data["cups"]
+        day = data['day']
         assets = data['assets']
 
         print data
 
-	r = random.random()
-	if(r < .6):
-		weather = "sunny"
+        r = random.random()
+        if(r < .6):
+            weather = "sunny"
 	elif(r < .8):
 		weather = "cloudy"
 	else:
