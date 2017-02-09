@@ -15,7 +15,7 @@
       <h1>Lemonade Stand</h1>
     </div>
     <div class="centered">
-      <div class="intro-text">
+      <div id="intro" class="intro-text">
         <p>Hi! Welcome to Lemonsville, California!</p>
         <p>In this small town, you are in charge of running your own lemonade stand. How much profit you make is up to you.
         <p>To manage your lemonade stand you will need to make these decisions every day:
@@ -27,26 +27,30 @@
         </ol>
         <p>You will begin with $2.00 cash (assets). Because your mother gave you some sugar, your cost to make lemonade is two cents a glass (this may change in the future.</p>
       </div>
-      <div class="error"><p id="error"></p></div>
-      <form id="form">
-        <div class="flex-row form-group">
-          <label class="flex-item" for="cups">How many cups?</label>
-          <input class="flex-item" name="cups" type="text" class="form-control" id="cups" placeholder="0">
-        </div>
-        <div class="flex-row form-group">
-          <label class="flex-item" for="signs">How many signs?</label>
-          <input class="flex-item" name="signs" type="text" class="form-control" id="signs" placeholder="0">
-        </div>
-        <div class="flex-row form-group">
-          <label class="flex-item" for="price">How much per cup?</label>
-          <input class="flex-item" name="price" type="text" class="form-control" id="price" placeholder="0">
-        </div>
-        <div class=submit-btn>
-          <button type="submit" class="btn btn-default">Submit</button>
-        </div>
-      </form>
+      <div id="questions">
+        <div class="error"><p id="error"></p></div>
+        <form id="form">
+          <div class="flex-row form-group">
+            <label class="flex-item" for="cups">How many cups?</label>
+            <input class="flex-item" name="cups" type="text" class="form-control" id="cups" placeholder="0">
+          </div>
+          <div class="flex-row form-group">
+            <label class="flex-item" for="signs">How many signs?</label>
+            <input class="flex-item" name="signs" type="text" class="form-control" id="signs" placeholder="0">
+          </div>
+          <div class="flex-row form-group">
+            <label class="flex-item" for="price">How much per cup?</label>
+            <input class="flex-item" name="price" type="text" class="form-control" id="price" placeholder="0">
+          </div>
+          <div class=submit-btn>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </div>
+        </form>
+      </div>
     </div>
+    <div id="canvas">
       <canvas id="myCanvas" width="500" height="300">
       </canvas>
+    </div>
   </body>
 </html>

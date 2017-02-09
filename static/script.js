@@ -12,9 +12,31 @@ $( document ).ready(function() {
     ENDING: 3
   }
 
-  var state = stateEnum.INTRO;
-  var day = 1;
-  var assets = 2;
+  var state;
+  var day;
+  var assets;
+
+  constructor() {
+    state = stateEnum.INTRO;
+    day = 1;
+    assets = 2.00;
+
+    $('#canvas').hide();
+    $('#questions').hide();
+  }
+
+  $('#intro').click(function() {
+    var state = stateEnum.FORM;
+    $('#intro').hide();
+    $('#canvas').show();
+    drawSunny();
+
+    setTimeout(function() {
+      console.log('hello');
+      $('#canvas').hide();
+      $('#questions').show();
+    }, 2000);
+  })
 
   $('#form').submit(function(event) {
     event.preventDefault();
@@ -50,14 +72,14 @@ $( document ).ready(function() {
       changeError('');
     }
     console.log(day)
-    data['day'] = day;
+      data['day'] = day;
     data['assets'] = assets;
     console.log('sending', data)
-    $.post( "/submitted", JSON.stringify(data), function(res){
-      var data = res.data;
-      console.log('returned', data);
-      day += 1;
-    });
+      $.post( "/submitted", JSON.stringify(data), function(res){
+        var data = res.data;
+        console.log('returned', data);
+        day += 1;
+      });
   });
 
   function drawSunny() {
@@ -81,7 +103,6 @@ $( document ).ready(function() {
 
     drawSign(ctx);
 
-    setTimeout(function() { drawHot()}, 2000)
   }
 
   function drawHot() {
@@ -105,7 +126,6 @@ $( document ).ready(function() {
 
     drawSign(ctx);
 
-    setTimeout(function() { drawCloudy()}, 2000)
   }
 
   function drawCloudy() {
@@ -130,12 +150,11 @@ $( document ).ready(function() {
 
     drawSign(ctx);
 
-    setTimeout(function() { drawSunny()}, 2000)
   }
 
   function drawCloud(ctx, centerX, centerY) {
     var radius = 20;
-    
+
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     ctx.fillStyle = '#bcbcbc';
@@ -178,7 +197,6 @@ $( document ).ready(function() {
     $('#error').text(msg);
   }
 
-  drawCloudy();
-
+  constructor();
 
 });
