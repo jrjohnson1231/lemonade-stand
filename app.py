@@ -16,8 +16,9 @@ stormBrewing = False
 specialDesc = ""
 specialDescIndicator = False
 specialResult = ""
-specialResultIndicator = True
+specialResultIndicator = False
 explanation = ""
+explanationIndicator = False
 startingPricePerGlass = 2
 totalDays = 30
 c9Constant = .5
@@ -30,46 +31,21 @@ assets = 2
 def index():
 	return render_template('index.html')
 
-@app.route('/initialized', methods=['GET'])
-def initialized():
-	global day
-	global assets
-	global startingPricePerGlass
-	day = 1
-	assets = 2
-	startingPricePerGlass = 2
-	return jsonify(data={'day': day, 'assets': assets, 'startingPricePerGlass': startingPricePerGlass})
+@app.route('/initialize', methods=['GET'])
+def initialize():
+	global weatherFactor
+	global weather
+	global chanceOfRain
+	global weatherReport
+	global streetCrewThirsty
+	global stormBrewing
+	global specialDesc
+	global explanation
+	global specialDescIndicator		
+	global explanationIndicator
 
-
-@app.route('/submitted', methods=['POST'])
-def submitted():
-        global weatherFactor
-        global weather
-        global chanceOfRain
-        global weatherReport
-        global streetCrewThirsty
-        global stormBrewing
-        global specialDesc
-        global explanation
-        global startingPricePerGlass
-        global totalDays
-        global c9Constant
-        global adBenefit
-        global glassesSold
-        global signCost
-        global assets
-        global specialResult
-
-	data = request.get_data().decode(encoding='UTF-8')
-	data = json.loads(data)
-	pricePlayerIsCharging = data["price"]
-	signsMade = data["signs"]
-	glassesMade = data["cups"]	
-	day = data['day']
-        assets = data['assets']
-
-        print data
-
+	specialDescIndicator = False
+	explanationIndicator = False
 	r = random.random()
 	if(r < .6):
 		weather = "sunny"
@@ -102,24 +78,42 @@ def submitted():
 		if(random.random() < .25):
 			stormBrewing = True
 	elif(weather == "hot"):
-            pass
+		pass
 	else:
 		if(random.random() < .25):
 			specialDesc = "The street department is working today. There will be no traffic on your street"
+			specialDescIndicator = True
 			if(random.random() < .25):
 				streetCrewThirsty = True
 			else:
 				weatherFactor = .1
 	if(day < 3):
-		currentPricePerGlass = 2
+		currentPricePerGlass = .02
 	elif(day < 7):
-		currentPricePerGlass = 4
+		currentPricePerGlass = .04
 		if(day == 3):
+			explanationIndicator = True
 			explanation = "(Your mother quit giving you free sugar.)"
 	else:
 		if(day == 7):
 			explanation = "(The price of lemonade mix just went up.)"
-		currentPricePerGlass = 5
+			explanationIndicator = True
+		currentPricePerGlass = .05
+	return jsonify(data={'currentPricePerGlass': currentPricePerGlass, 'explanation': explanation, 'explanationIndicator': explanationIndicator, 'specialDesc': specialDesc, 'specialDescIndicator': specialDescIndicator, 'weatherReport': weatherReport})
+
+
+@app.route('/submitted', methods=['POST'])
+def submitted():
+	global startingPricePerGlass
+	global totalDays
+	global c9Constant
+	global adBenefit
+	global glassesSold
+	global signCost
+	global assets
+	global specialResult
+	global specialResultIndicator
+
 	if(pricePlayerIsCharging >= startingPricePerGlass):
 		number1 = ((math.pow(startingPricePerGlass, 2) * totalDays) / (math.pow(pricePlayerIsCharging, 2)))
 	else:
@@ -132,20 +126,22 @@ def submitted():
 		number2 = 0
 		if(glassesMade > 0):
 			specialResult = "All lemonade was ruined"
+			specialResultIndicator = True
 	elif(streetCrewThirsty):
 		specialResult = "The street crews bought all your lemonade at lunchtime!"
+		specialResultIndicator = True
 	if(number2 < glassesMade):
 		glassesSold = number2
 	else:
 		glassesSold = glassesMade
-        print 'Sold' + str(glassesSold) + 'glasses'
-        print 'Ad Benefit' + str(adBenefit)
-        print 'Current price per glass' + str(currentPricePerGlass)
-	expenses = glassesMade * (float(currentPricePerGlass)/float(100)) + signsMade * signCost
+		print 'Sold' + str(glassesSold) + 'glasses'
+		print 'Ad Benefit' + str(adBenefit)
+		print 'Current price per glass' + str(currentPricePerGlass)
+	expenses = glassesMade * currentPricePerGlass + signsMade * signCost
 	income = float(glassesSold) * float(pricePlayerIsCharging) / float(100)
 	profit = income - expenses
 	assets = assets + income - expenses
-	return jsonify(data={'assets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'explanation': explanation, 'weatherReport': weatherReport, 'specialDesc': specialDesc, 'specialResult': specialResult})
+	return jsonify(data={'assets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'specialResult': specialResult, 'specialResultIndicator': specialResultIndicator})
 
 if __name__ == '__main__':
 	app.run(debug=True, host='0.0.0.0')
