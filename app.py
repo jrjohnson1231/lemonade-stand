@@ -80,7 +80,7 @@ def initialize():
 			explanation = "(The price of lemonade mix just went up.)"
 			explanationIndicator = True
 		currentPricePerGlass = .05
-	return jsonify(data={'weather': weather, 'currentPricePerGlass': currentPricePerGlass, 'explanation': explanation, 'explanationIndicator': explanationIndicator, 'specialDesc': specialDesc, 'specialDescIndicator': specialDescIndicator, 'weatherReport': weatherReport})
+	return jsonify(data={'thirsty': streetCrewThirsty, 'weather': weather, 'currentPricePerGlass': currentPricePerGlass, 'explanation': explanation, 'explanationIndicator': explanationIndicator, 'specialDesc': specialDesc, 'specialDescIndicator': specialDescIndicator, 'weatherReport': weatherReport})
 
 
 @app.route('/submitted', methods=['POST'])
@@ -104,7 +104,8 @@ def submitted():
 	glassesMade = data["cups"]
 	day = data['day']
 	assets = data['assets']
-        weather = data['weather']
+    weather = data['weather']
+	streetCrewThirsty = data['thirsty']
 
 	if(day < 3):
 		currentPricePerGlass = .02
@@ -162,13 +163,11 @@ def submitted():
 	elif(streetCrewThirsty):
 		specialResult = "The street crews bought all your lemonade at lunchtime!"
 		specialResultIndicator = True
+		number2 = glassesMade
 	if(number2 < glassesMade):
 		glassesSold = number2
 	else:
 		glassesSold = glassesMade
-		print 'Sold' + str(glassesSold) + 'glasses'
-		print 'Ad Benefit' + str(adBenefit)
-		print 'Current price per glass' + str(currentPricePerGlass)
 	expenses = glassesMade * currentPricePerGlass + signsMade * signCost
 	income = float(glassesSold) * float(pricePlayerIsCharging) / float(100)
 	profit = income - expenses
