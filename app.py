@@ -31,7 +31,7 @@ assets = 2
 def index():
 	return render_template('index.html')
 
-@app.route('/initialize', methods=['GET'])
+@app.route('/initialize', methods=['POST'])
 def initialize():
 	global weatherFactor
 	global weather
@@ -43,6 +43,10 @@ def initialize():
 	global explanation
 	global specialDescIndicator		
 	global explanationIndicator
+
+        data = request.get_data().decode(encoding='UTF-8')
+        data = json.loads(data)
+        day = data['day']
 
 	specialDescIndicator = False
 	explanationIndicator = False
@@ -114,6 +118,14 @@ def submitted():
 	global specialResult
 	global specialResultIndicator
 
+        data = request.get_data().decode(encoding='UTF-8')
+        data = json.loads(data)
+        pricePlayerIsCharging = data["price"]
+        signsMade = data["signs"]
+        glassesMade = data["cups"]
+        day = data['day']
+        assets = data['assets']
+
 	if(pricePlayerIsCharging >= startingPricePerGlass):
 		number1 = ((math.pow(startingPricePerGlass, 2) * totalDays) / (math.pow(pricePlayerIsCharging, 2)))
 	else:
@@ -141,7 +153,7 @@ def submitted():
 	income = float(glassesSold) * float(pricePlayerIsCharging) / float(100)
 	profit = income - expenses
 	assets = assets + income - expenses
-	return jsonify(data={'glassesSold': glassesSold, glassets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'specialResult': specialResult, 'specialResultIndicator': specialResultIndicator})
+	return jsonify(data={'glassesSold': glassesSold, 'assets': assets, 'income': income, 'profit': profit, 'expenses': expenses, 'specialResult': specialResult, 'specialResultIndicator': specialResultIndicator})
 
 if __name__ == '__main__':
 	app.run(debug=True, host='0.0.0.0')

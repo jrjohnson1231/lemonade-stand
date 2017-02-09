@@ -38,22 +38,22 @@ $( document ).ready(function() {
     if (input.cups === undefined || !input.signs === undefined || input.price === undefined) {
       changeError('Invalid input!');
       return;
-    } else if (data.cups < 0) {
+    } else if (input.cups < 0) {
       changeError("Can't make negative cups of lemonade!");
       return;
-    } else if (data.cups > 1000) {
+    } else if (input.cups > 1000) {
       changeError("You can't make that many cups in one morning!");
       return;
-    } else if (data.signs < 0) {
+    } else if (input.signs < 0) {
       changeError("You can't make negative signs!");
       return;
-    } else if (data.signs > 50) {
+    } else if (input.signs > 50) {
       changeError("The sign store doesn't have enough materials for that many signs!");
       return;
-    } else if (data.price < 0) {
+    } else if (input.price < 0) {
       changeError("You can't charge negative cents per cup!");
       return;
-    } else if ( data.price > 100) {
+    } else if ( input.price > 100) {
       changeError("You can't charge that much, nobody will buy it");
       return;
     } else {
@@ -62,8 +62,8 @@ $( document ).ready(function() {
     console.log(day);
     input['day'] = day;
     input['assets'] = assets;
-    console.log('sending', data)
-      $.post( "/submitted", JSON.stringify(data), function(res){
+    console.log('sending', input)
+      $.post( "/submitted", JSON.stringify(input), function(res){
         getNextRound()
         var data = res.data;
         console.log('returned', data);
@@ -239,9 +239,11 @@ $( document ).ready(function() {
   }
 
   function getNextRound() {
-    $.get('/initialize', function(res) {
-      weather = res.data.weather || "sunny";
-      costToMake = res.data.currentPricePerGlass || .02;
+    $.post('/initialize', JSON.stringify({day}), function(res) {
+      console.log(res.data);
+      weather = res.data.weatherReport;
+      costToMake = res.data.currentPricePerGlass;
+      console.log(weather, costToMake);
     })
   }
 
