@@ -28,7 +28,7 @@ assets = 2
 def index():
 	return render_template('index.html')
 
-@app.route('/initializd', methods=['GET'])
+@app.route('/initialize', methods=['GET'])
 def initialized():
 	global day
 	global assets

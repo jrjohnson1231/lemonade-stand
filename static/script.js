@@ -10,11 +10,15 @@ $( document ).ready(function() {
   var state;
   var day;
   var assets;
+  var weather;
 
-  constructor() {
+  function constructor() {
     state = stateEnum.INTRO;
     day = 1;
-    assets = 2.00;
+    $.get('/initialize', function(res) {
+      assets = res.data.assets;
+      weather = res.data.weather || "sunny";
+    })
 
     $('#canvas').hide();
     $('#questions').hide();
@@ -24,13 +28,14 @@ $( document ).ready(function() {
     var state = stateEnum.FORM;
     $('#intro').hide();
     $('#canvas').show();
-    drawSunny();
+
+    drawCanvas();
 
     setTimeout(function() {
       console.log('hello');
       $('#canvas').hide();
       $('#questions').show();
-    }, 2000);
+    }, 3000);
   })
 
   $('#form').submit(function(event) {
@@ -66,8 +71,8 @@ $( document ).ready(function() {
     } else {
       changeError('');
     }
-    console.log(day)
-      data['day'] = day;
+    console.log(day);
+    data['day'] = day;
     data['assets'] = assets;
     console.log('sending', data)
       $.post( "/submitted", JSON.stringify(data), function(res){
@@ -76,6 +81,27 @@ $( document ).ready(function() {
         day += 1;
       });
   });
+
+  function drawCanvas() {
+    switch (weather) {
+      case 'sunny':
+        drawSunny();
+        weatherMessage('Today is sunny');
+        break;
+      case 'cloudy':
+        drawCloudy();
+        weatherMessage('Today is cloudy');
+        break;
+      case 'hot':
+        drawHot();
+        weatherMessage('Today is hot and dry');
+        break;
+      case 'stormy':
+        drawCloudy();
+        weatherMessage('There will be thunderstorms today');
+        break
+    }
+  }
 
   function drawSunny() {
     var canvas = document.getElementById("myCanvas");
@@ -190,6 +216,10 @@ $( document ).ready(function() {
   function changeError(msg) {
     console.log('changing error');
     $('#error').text(msg);
+  }
+
+  function weatherMessage(msg) {
+    $('#wthr-msg').text(msg); 
   }
 
   constructor();
