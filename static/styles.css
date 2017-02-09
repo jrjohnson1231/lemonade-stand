@@ -25,15 +25,14 @@
 }
 
 .form-group input {
-  width: 5%;
-  margin-left: 5px;
-
+  width: 25px;
   border: 0px;
-  border-bottom: 1px solid black;
+  border-bottom: 2px solid black;
+  text-align: center;
 }
 
 .form-group label {
-  width: 30%;
+  width: 40%;
   margin-right: 0px;
 }
 
@@ -64,8 +63,23 @@ canvas {
   font-weight: bold;
 }
 
+#q-assets, #q-cost {
+  margin-left: 30px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+#q-cost {
+  margin-bottom: 20px;
+}
+
 #canvas {
   text-align: center;
   font-size: 18px;
+  font-weight: bold;
+}
+
+.results {
+  font-size: 16px;
   font-weight: bold;
 }

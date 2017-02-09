@@ -1,53 +1,41 @@
 $( document ).ready(function() {
 
-  const stateEnum = {
-    INTRO: 0,
-    PICTURE: 1,
-    FORM: 2,
-    ENDING: 3
-  }
-
-  var state;
   var day;
   var assets;
   var weather;
+  var costToMake;
 
   function constructor() {
-    state = stateEnum.INTRO;
     day = 1;
-    $.get('/initialize', function(res) {
-      assets = res.data.assets;
-      weather = res.data.weather || "sunny";
-    })
+    assets = 2.00;
+
+    getNextRound();
 
     $('#canvas').hide();
     $('#questions').hide();
   }
 
   $('#intro').click(function() {
-    var state = stateEnum.FORM;
     $('#intro').hide();
     $('#canvas').show();
 
     drawCanvas();
 
     setTimeout(function() {
-      console.log('hello');
-      $('#canvas').hide();
-      $('#questions').show();
+      showQuestons();
     }, 3000);
   })
 
   $('#form').submit(function(event) {
     event.preventDefault();
     var raw_data = $(this).serializeArray();
-    var data = { };
+    var input = { };
 
     $.map(raw_data, function(n) {
-      data[n['name']] = parseInt(n['value']);
+      input[n['name']] = parseInt(n['value']);
     });
 
-    if (!data.cups || !data.signs || !data.price) {
+    if (input.cups === undefined || !input.signs === undefined || input.price === undefined) {
       changeError('Invalid input!');
       return;
     } else if (data.cups < 0) {
@@ -72,13 +60,33 @@ $( document ).ready(function() {
       changeError('');
     }
     console.log(day);
-    data['day'] = day;
-    data['assets'] = assets;
+    input['day'] = day;
+    input['assets'] = assets;
     console.log('sending', data)
       $.post( "/submitted", JSON.stringify(data), function(res){
+        getNextRound()
         var data = res.data;
         console.log('returned', data);
         day += 1;
+        assets = data.assets;
+        var income = data.income;
+        var profit = data.profit;
+        var expenses = data.expenses;
+        var glassesSold = data.glassesSold;
+        var perGlass = parseFloat(input.price) / parseFloat(100);
+        var glassesMade = input.cups;
+        var signsMade = input.signs;
+
+        $('#day').text('Day ' + day);
+        $('#glasses-sold').text(glassesSold + ' glasses sold');
+        $('#per-glass').text('$' + perGlass + ' per glass');
+        $('#total-in').text('$' + income + ' total income');
+        $('#glasses-made').text(glassesMade + ' glasses made');
+        $('#signs-made').text(signsMade + ' signs made');
+        $('#total-exp').text('$' + expenses + ' total expenses');
+        $('#profit').text('$' + profit + ' total profit');
+        $('#assets').text('$' + assets + ' total assets');
+
       });
   });
 
@@ -219,7 +227,22 @@ $( document ).ready(function() {
   }
 
   function weatherMessage(msg) {
-    $('#wthr-msg').text(msg); 
+    $('#wthr-msg').text(msg);
+  }
+
+  function showQuestons() {
+    $('#canvas').hide();
+    $('#questions').show();
+
+    $('#q-assets').text('On day ' + day + 'you have $' + assets + ' in assets.');
+    $('#q-cost').text('The cost to make lemonade is $' + costToMake + ' per cup.');
+  }
+
+  function getNextRound() {
+    $.get('/initialize', function(res) {
+      weather = res.data.weather || "sunny";
+      costToMake = res.data.currentPricePerGlass || .02;
+    })
   }
 
   constructor();
