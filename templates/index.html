@@ -11,6 +11,9 @@
     <script src="{{ url_for('static', filename='script.js') }}"></script>
   </head>
   <body>
+    <audio autoplay loop>
+      <source src="{{ url_for('static', filename='bgsound.mp3') }}" type="audio/mp3">
+    </audio> 
     <div class="banner">
       <h1>Lemonade Stand</h1>
     </div>
@@ -77,5 +80,6 @@
         <h1 class="text-center">YOU LOSE</h1>
         <p class="text-center">(click to play again)</p>
       </div>
+    </div>
   </body>
 </html>
