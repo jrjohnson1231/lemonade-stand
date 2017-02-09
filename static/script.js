@@ -7,6 +7,7 @@ $( document ).ready(function() {
   var weatherReport;
   var specialDesc;
   var explanation;
+  var special;
 
   function constructor() {
     day = 0;
@@ -14,10 +15,16 @@ $( document ).ready(function() {
 
     getNextRound();
 
+    $('#intro').show();
     $('#canvas').hide();
     $('#questions').hide();
     $('#results').hide();
+    $('#loser').hide();
   }
+
+  $('#loser').click(function() {
+    constructor();
+  })
 
   $('#intro').click(function() {
     $('#intro').hide();
@@ -41,6 +48,7 @@ $( document ).ready(function() {
     }, 3000);
   })
 
+
   $('#form').submit(function(event) {
     event.preventDefault();
     var raw_data = $(this).serializeArray();
@@ -50,6 +58,7 @@ $( document ).ready(function() {
       input[n['name']] = parseInt(n['value']);
     });
 
+    console.log('spending',input.cups*costToMake + input.signs*.15)
     if (isNaN(input.cups) || isNaN(input.signs) || isNaN(input.price)) {
       changeError('Invalid input!');
       return;
@@ -71,17 +80,27 @@ $( document ).ready(function() {
     } else if ( input.price > 100) {
       changeError("You can't charge that much, nobody will buy it");
       return;
+    } else if (input.cups*costToMake + input.signs*.15 > assets) {
+      console.log('out of money')
+      changeError("You don't have enough money to make that!");
+      return;
     } else {
       changeError('');
     }
     console.log(day);
     input['day'] = day;
     input['assets'] = assets;
+    input['weather'] = weather;
     console.log('sending', input)
       $.post( "/submitted", JSON.stringify(input), function(res){
         var data = res.data;
         console.log('returned', data);
         assets = data.assets;
+        if (assets <= 0) {
+          $('#questions').hide();
+          $('#loser').show();
+          return;
+        }
         var income = data.income;
         var profit = data.profit;
         var expenses = data.expenses;
@@ -90,7 +109,14 @@ $( document ).ready(function() {
         var glassesMade = input.cups;
         var signsMade = input.signs;
 
+        if (data.specialResultIndicator) {
+          special = data.specialResult; 
+        } else {
+          special = '';
+        }
+
         $('#day').text('Day ' + day);
+        $('#special').text(special);
         $('#glasses-sold').text(glassesSold + ' glasses sold');
         $('#per-glass').text('$' + perGlass + ' per glass');
         $('#total-in').text('$' + parseFloat(income).toFixed(2) + ' total income');
@@ -250,6 +276,13 @@ $( document ).ready(function() {
   }
 
   function showQuestons() {
+    if (assets < costToMake) {
+      explanation = "You don't have enough money to make any more lemonade, you lose!";
+      setTimeout(function() {
+        $('#questions').hide();
+        $('#loser').show();
+      }, 3000)
+    }
     $('#explain').text(explanation);
     $('#canvas').hide();
     $('#questions').show();

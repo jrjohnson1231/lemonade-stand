@@ -69,8 +69,8 @@ canvas {
   font-weight: bold;
 }
 
-#q-cost {
-  margin-bottom: 20px;
+.form {
+  margin-top: 20px;
 }
 
 #canvas {
@@ -87,4 +87,12 @@ canvas {
 
 .text-center {
   text-align: center;
+}
+
+#loser p {
+  font-size: 8px;
+}
+
+#loser h1 {
+  font-size: 100px;
 }
