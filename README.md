@@ -16,4 +16,4 @@ $ python app.py
 
 Live Deployment
 ---------------
-The app can also be viewd on (Heroku)[lemonsinthebazaar.herokuapp.com]
+The app can also be viewd on [Heroku](lemonsinthebazaar.herokuapp.com)
