@@ -1,5 +1,6 @@
 $( document ).ready(function() {
 
+  // Global variables needed for game
   var day;
   var assets;
   var weather;
@@ -10,12 +11,14 @@ $( document ).ready(function() {
   var special;
   var thirsty;
 
+  // Called at beginning of each game
   function constructor() {
     day = 0;
     assets = 2.00;
 
     getNextRound();
 
+    // Shows intro screen
     $('#intro').show();
     $('#canvas').hide();
     $('#questions').hide();
@@ -23,10 +26,12 @@ $( document ).ready(function() {
     $('#loser').hide();
   }
 
+  // When lose screen is clicked, start new game
   $('#loser').click(function() {
     constructor();
   })
 
+  // When intro screen is clicked, move to first day's weather
   $('#intro').click(function() {
     $('#intro').hide();
     $('#canvas').show();
@@ -38,6 +43,7 @@ $( document ).ready(function() {
     }, 3000);
   })
 
+  // When results are clicked go to next day's weather
   $('#results').click(function() {
     $('#results').hide();
     $('#canvas').show();
@@ -49,16 +55,18 @@ $( document ).ready(function() {
     }, 3000);
   })
 
-
+  // When input is submited call backend to compute profit
   $('#form').submit(function(event) {
     event.preventDefault();
     var raw_data = $(this).serializeArray();
     var input = { };
 
+    // puts form data into object
     $.map(raw_data, function(n) {
       input[n['name']] = parseInt(n['value']);
     });
 
+    // all validations, must satisfy all of these conditions
     if (isNaN(input.cups) || isNaN(input.signs) || isNaN(input.price)) {
       changeError('Invalid input!');
       return;
@@ -86,50 +94,58 @@ $( document ).ready(function() {
     } else {
       changeError('');
     }
+
+    // add necessary data to body to calculate profit
     input['day'] = day;
     input['assets'] = assets;
     input['weather'] = weather;
     input['thirsty'] = thirsty;
-      $.post( "/submitted", JSON.stringify(input), function(res){
-        var data = res.data;
-        assets = data.assets;
-        if (assets <= 0) {
-          $('#questions').hide();
-          $('#loser').show();
-          return;
-        }
-        var income = data.income;
-        var profit = data.profit;
-        var expenses = data.expenses;
-        var glassesSold = data.glassesSold;
-        var perGlass = parseFloat(input.price) / parseFloat(100);
-        var glassesMade = input.cups;
-        var signsMade = input.signs;
 
-        if (data.specialResultIndicator) {
-          special = data.specialResult; 
-        } else {
-          special = '';
-        }
+    $.post( "/submitted", JSON.stringify(input), function(res){
+      var data = res.data;
+      assets = data.assets;
 
-        $('#day').text('Day ' + day);
-        $('#special').text(special);
-        $('#glasses-sold').text(glassesSold + ' glasses sold');
-        $('#per-glass').text('$' + perGlass + ' per glass');
-        $('#total-in').text('$' + parseFloat(income).toFixed(2) + ' total income');
-        $('#glasses-made').text(glassesMade + ' glasses made');
-        $('#signs-made').text(signsMade + ' signs made');
-        $('#total-exp').text('$' + parseFloat(expenses).toFixed(2) + ' total expenses');
-        $('#profit').text('$' + parseFloat(profit).toFixed(2) + ' total profit');
-        $('#assets').text('$' + parseFloat(assets).toFixed(2) + ' total assets');
-
-        $('#results').show();
+      // out of money
+      if (assets <= 0) {
         $('#questions').hide();
-        getNextRound()
+        $('#loser').show();
+        return;
+      }
 
-      });
+      // prepare results
+      var income = data.income;
+      var profit = data.profit;
+      var expenses = data.expenses;
+      var glassesSold = data.glassesSold;
+      var perGlass = parseFloat(input.price) / parseFloat(100);
+      var glassesMade = input.cups;
+      var signsMade = input.signs;
+
+      if (data.specialResultIndicator) {
+        special = data.specialResult; 
+      } else {
+        special = '';
+      }
+
+      $('#day').text('Day ' + day);
+      $('#special').text(special);
+      $('#glasses-sold').text(glassesSold + ' glasses sold');
+      $('#per-glass').text('$' + perGlass + ' per glass');
+      $('#total-in').text('$' + parseFloat(income).toFixed(2) + ' total income');
+      $('#glasses-made').text(glassesMade + ' glasses made');
+      $('#signs-made').text(signsMade + ' signs made');
+      $('#total-exp').text('$' + parseFloat(expenses).toFixed(2) + ' total expenses');
+      $('#profit').text('$' + parseFloat(profit).toFixed(2) + ' total profit');
+      $('#assets').text('$' + parseFloat(assets).toFixed(2) + ' total assets');
+
+      $('#results').show();
+      $('#questions').hide();
+      getNextRound()
+
+    });
   });
 
+  // Determines which weather picture to draw
   function drawCanvas() {
     $('#event').text(specialDesc);
 
@@ -153,6 +169,7 @@ $( document ).ready(function() {
     }
   }
 
+  // Draws sunny day
   function drawSunny() {
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
@@ -176,6 +193,7 @@ $( document ).ready(function() {
 
   }
 
+  // Draws hot day
   function drawHot() {
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
@@ -199,6 +217,7 @@ $( document ).ready(function() {
 
   }
 
+  // Draws cloudy day
   function drawCloudy() {
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
@@ -223,6 +242,7 @@ $( document ).ready(function() {
 
   }
 
+  // Draws clouds when it is a rainy day
   function drawCloud(ctx, centerX, centerY) {
     var radius = 20;
 
@@ -252,6 +272,7 @@ $( document ).ready(function() {
     ctx.fill();
   }
 
+  // Draws sign on lemonade stand, same for all weather types
   function drawSign(ctx) {
     ctx.fillStyle = "#af6300";
     ctx.fillRect(175,90,5,70);
@@ -263,16 +284,19 @@ $( document ).ready(function() {
     ctx.fillText("Lemonade",190, 115);
   }
 
+  // Set error message when input is invalid
   function changeError(msg) {
     $('#error').text(msg);
   }
 
+  // Sets message above weather canvas
   function weatherMessage() {
     $('#wthr-msg').text(weatherReport);
   }
 
+  // Displays questions for day
   function showQuestons() {
-    if (assets < costToMake) {
+    if (assets < costToMake) { // if you can't make 1 cup, you lose
       explanation = "You don't have enough money to make any more lemonade, you lose!";
       setTimeout(function() {
         $('#questions').hide();
@@ -287,6 +311,7 @@ $( document ).ready(function() {
     $('#q-cost').text('The cost to make lemonade is $' + parseFloat(costToMake).toFixed(2) + ' per cup.');
   }
 
+  // Get weather and price to make a cup for the next round, also increments day
   function getNextRound() {
     day += 1;
     $.post('/initialize', JSON.stringify({day}), function(res) {
@@ -308,6 +333,7 @@ $( document ).ready(function() {
     })
   }
 
+  // Starts game by calling constructor
   constructor();
 
 });
